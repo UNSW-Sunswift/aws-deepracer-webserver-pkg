@@ -178,7 +178,7 @@ def api_manual_drive():
 
     if angle < -1.0 or angle > 1.0:
         return api_fail("angle out of range")
-    if throttle < -1.0 or throttle > 1.0:
+    if throttle < -100.0 or throttle > 100.0:
         return api_fail("throttle out of range")
 
     webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}")
