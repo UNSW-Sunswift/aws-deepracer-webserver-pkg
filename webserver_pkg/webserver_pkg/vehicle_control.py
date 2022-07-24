@@ -159,7 +159,7 @@ def api_set_drive_mode():
         return jsonify({"success": False, "reason": "drive_mode must be set."})
 
     webserver_node.get_logger().info(f"Changed the vehicle state to {drive_mode}")
-    drive_mode_state = 0 if drive_mode == "manual" else 1
+    drive_mode_state = 1 if drive_mode == "remote" else 0
 
     try:
         vehicle_state_req = ActiveStateSrv.Request()
