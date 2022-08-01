@@ -113,7 +113,13 @@ class WebServerNode(Node):
                                               )
         self.server_thread.start()
 
+
         # Create service clients.
+            # Removing Dependant Service Clients
+
+            # TODO
+            # This is for testing only and at least some of these
+            # should be re-implemented for actual deployment
 
         # Create a reentrant callback group to set the vehicle mode.
         vehicle_mode_cb_group = ReentrantCallbackGroup()
@@ -122,6 +128,8 @@ class WebServerNode(Node):
                                                     VEHICLE_STATE_SERVICE,
                                                     callback_group=vehicle_mode_cb_group)
         self.wait_for_service_availability(self.vehicle_state_cli)
+
+        '''Removing Dependant Service Clients
 
         # Create a reentrant callback group to activate the state.
         enable_state_cb_group = ReentrantCallbackGroup()
@@ -287,6 +295,8 @@ class WebServerNode(Node):
                                                      GET_OTG_LINK_STATE_SERVICE,
                                                      callback_group=otg_link_state_cb_group)
         self.wait_for_service_availability(self.otg_link_state_cli)
+
+        '''
 
         # Create a reentrant callback group to publish manual drive messages.
         manual_pub_drive_msg_cb_group = ReentrantCallbackGroup()
