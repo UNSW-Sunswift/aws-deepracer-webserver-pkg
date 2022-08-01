@@ -168,6 +168,9 @@ def api_manual_drive():
     angle = request.json.get("angle")
     throttle = request.json.get("throttle")
     max_speed = request.json.get("max_speed")
+    regen = request.json.get("regen")
+    brake = request.json.get("brake")
+    gear = request.json.get("gear")
 
     if angle is None:
         return api_fail("angle is required")
@@ -175,13 +178,28 @@ def api_manual_drive():
         return api_fail("throttle is required")
     if max_speed is None:
         return api_fail("max_speed is required")
+    if regen is None:
+        return api_fail("regen is required")
+    if brake is None:
+        return api_fail("brake is required")
+    if gear is None:
+        return api_fail("gear is required")
 
-    if angle < -1.0 or angle > 1.0:
-        return api_fail("angle out of range")
-    if throttle < -1.0 or throttle > 1.0:
-        return api_fail("throttle out of range")
 
-    webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}")
+    if max_speed < 0.0 or max_speed > 1.0:
+        return api_fail("max_speed out of range [0, 1]")
+    if angle < -constants.ANGLE_MAX or angle > constants.ANGLE_MAX:
+        return api_fail(f"angle out of range [{-constants.ANGLE_MAX}, {constants.ANGLE_MAX}]")
+    if throttle < 0.0 or throttle > 100.0:
+        return api_fail("throttle out of range [0.0, 100.0]")
+    if regen < 0.0 or regen > 100.0:
+        return api_fail("regen is out of range [0.0, 100.0]")
+    if brake < 0.0 or brake > 100.0:
+        return api_fail("brake is out of range [0.0, 100.0]")
+    if gear != 0 and gear != 1 and gear != -1:
+        return api_fail("gear needs to be -1, 0, or 1 for r n d")
+
+    webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}  Max_Speed: {max_speed}  Regen: {regen}  Brake: {brake}  Gear: {gear}")
 
     # Create the servo message.
     msg = ServoCtrlMsg()
