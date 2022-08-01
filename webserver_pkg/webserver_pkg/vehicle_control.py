@@ -28,7 +28,7 @@ from flask import (Blueprint,
                    jsonify,
                    request)
 
-from deepracer_interfaces_pkg.msg import ServoCtrlMsg
+
 from deepracer_interfaces_pkg.srv import (ActiveStateSrv,
                                           EnableStateSrv,
                                           NavThrottleSrv,
@@ -37,7 +37,7 @@ from webserver_pkg import constants
 from webserver_pkg.utility import (api_fail,
                                    call_service_sync)
 from webserver_pkg import webserver_publisher_node
-
+from webserver_pkg.msg import ServoCtrlMsg
 
 VEHICLE_CONTROL_BLUEPRINT = Blueprint("vehicle_control", __name__)
 
@@ -108,7 +108,7 @@ def api_manual_drive():
     Returns:
         dict: Execution status if the API call was successful.
     """
-    webserver_node = webserver_publisher_node.get_webserver_node()
+        webserver_node = webserver_publisher_node.get_webserver_node()
     angle = request.json.get("angle")
     throttle = request.json.get("throttle")
     max_speed = request.json.get("max_speed")
@@ -122,7 +122,6 @@ def api_manual_drive():
         return api_fail("throttle is required")
     if max_speed is None:
         return api_fail("max_speed is required")
-<<<<<<< HEAD
     if regen is None:
         return api_fail("regen is required")
     if brake is None:
@@ -130,14 +129,11 @@ def api_manual_drive():
     if gear is None:
         return api_fail("gear is required")
 
-=======
->>>>>>> raw_manual_only
 
     if max_speed < 0.0 or max_speed > 1.0:
         return api_fail("max_speed out of range [0, 1]")
     if angle < -constants.ANGLE_MAX or angle > constants.ANGLE_MAX:
         return api_fail(f"angle out of range [{-constants.ANGLE_MAX}, {constants.ANGLE_MAX}]")
-<<<<<<< HEAD
     if throttle < 0.0 or throttle > 100.0:
         return api_fail("throttle out of range [0.0, 100.0]")
     if regen < 0.0 or regen > 100.0:
@@ -148,12 +144,6 @@ def api_manual_drive():
         return api_fail("gear needs to be -1, 0, or 1 for r n d")
 
     webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}  Max_Speed: {max_speed}  Regen: {regen}  Brake: {brake}  Gear: {gear}")
-=======
-    if throttle < -100.0 or throttle > 100.0:
-        return api_fail("throttle out of range [-100.0, 100.0]")
-
-    webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle} MAX_Speed: {max_speed}")
->>>>>>> raw_manual_only
 
     # Create the servo message.
     msg = ServoCtrlMsg()
