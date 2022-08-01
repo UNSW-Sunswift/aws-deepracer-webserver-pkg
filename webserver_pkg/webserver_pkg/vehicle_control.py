@@ -151,6 +151,9 @@ def api_manual_drive():
     # Send raw angle & throttle values
     msg.angle = angle
     msg.throttle = get_rescaled_manual_speed(throttle, max_speed)
+    msg.regen = regen
+    msg.brake = brake
+    msg.gear = gear
 
     # bound the throttle value based on the categories defined
     # msg.angle = -1.0 * get_categorized_manual_angle(angle)
