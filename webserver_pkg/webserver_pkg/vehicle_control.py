@@ -108,7 +108,7 @@ def api_manual_drive():
     Returns:
         dict: Execution status if the API call was successful.
     """
-        webserver_node = webserver_publisher_node.get_webserver_node()
+    webserver_node = webserver_publisher_node.get_webserver_node()
     angle = request.json.get("angle")
     throttle = request.json.get("throttle")
     max_speed = request.json.get("max_speed")
