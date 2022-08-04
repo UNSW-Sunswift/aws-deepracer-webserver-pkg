@@ -84,7 +84,7 @@ from webserver_pkg.constants import (VEHICLE_STATE_SERVICE,
                                      CAL_DRIVE_TOPIC,
                                      MANUAL_DRIVE_TOPIC,
                                      SOFTWARE_UPDATE_PCT_TOPIC)
-from msg import ServoCtrlMsg
+from messages.msg import ServoCtrlMsg
 
 class WebServerNode(Node):
     """Node responsible for launching a Flask application as a seperate thread

@@ -37,7 +37,7 @@ from webserver_pkg import constants
 from webserver_pkg.utility import (api_fail,
                                    call_service_sync)
 from webserver_pkg import webserver_publisher_node
-from msg import ServoCtrlMsg
+from messages.msg import ServoCtrlMsg
 
 VEHICLE_CONTROL_BLUEPRINT = Blueprint("vehicle_control", __name__)
 
