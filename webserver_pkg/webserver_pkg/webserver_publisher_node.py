@@ -58,8 +58,7 @@ from deepracer_interfaces_pkg.srv import (ActiveStateSrv,
                                           NavThrottleSrv,
                                           GetCtrlModesSrv,
                                           OTGLinkStateSrv)
-from deepracer_interfaces_pkg.msg import (ServoCtrlMsg,
-                                          SoftwareUpdatePctMsg)
+from deepracer_interfaces_pkg.msg import (SoftwareUpdatePctMsg)
 from webserver_pkg.webserver import app
 from webserver_pkg.utility import DoubleBuffer
 from webserver_pkg.constants import (VEHICLE_STATE_SERVICE,
@@ -85,7 +84,7 @@ from webserver_pkg.constants import (VEHICLE_STATE_SERVICE,
                                      CAL_DRIVE_TOPIC,
                                      MANUAL_DRIVE_TOPIC,
                                      SOFTWARE_UPDATE_PCT_TOPIC)
-
+from webserver_pkg.msg import ServoCtrlMsg
 
 class WebServerNode(Node):
     """Node responsible for launching a Flask application as a seperate thread
