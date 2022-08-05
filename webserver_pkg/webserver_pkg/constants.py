@@ -30,7 +30,7 @@ BASE_PATH = "/opt/aws/deepracer/"
 # webserver_pkg
 CAL_DRIVE_TOPIC = "calibration_drive"
 MANUAL_DRIVE_TOPIC = "manual_drive"
-ANGLE_MAX = 180.0
+ANGLE_MAX = 320.0
 
 # camera_pkg
 CAMERA_PKG_NS = "/camera_pkg"
