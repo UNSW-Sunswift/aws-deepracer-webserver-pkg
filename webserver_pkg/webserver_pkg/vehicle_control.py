@@ -159,9 +159,9 @@ def api_manual_drive():
     # msg.angle = -1.0 * get_categorized_manual_angle(angle)
     # categorized_throttle = get_categorized_manual_throttle(throttle)
     # msg.throttle = -1.0 * get_rescaled_manual_speed(categorized_throttle, max_speed)
-
+    speed = webserver_publisher_node.speedValue
     webserver_node.pub_manual_drive.publish(msg)
-    return jsonify({"success": True})
+    return jsonify({"success": True, "speed": speed})
 
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/drive_mode", methods=["PUT", "POST"])

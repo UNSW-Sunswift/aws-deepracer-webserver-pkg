@@ -14,6 +14,7 @@
   <depend>rclpy</depend>
   <depend>deepracer_interfaces_pkg</depend>
   <depend>ctrl_pkg</depend>
+  <depend>std_msgs</depend>
   <depend>sensor_fusion_pkg</depend>
   <depend>deepracer_systems_pkg</depend>
   <depend>device_info_pkg</depend>
