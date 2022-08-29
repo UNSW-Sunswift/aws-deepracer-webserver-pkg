@@ -113,16 +113,25 @@ class WebServerNode(Node):
                                               )
         self.server_thread.start()
 
-        super().__init__('webserver_speed_subscriber')
-        self.subscription = self.create_subscription(
+        super().__init__('webserver_speed_left_subscriber')
+        self.subscription_Left = self.create_subscription(
             Float32,
-            '/car/velocity_kph',
+            '/car/velocity_kph/left',
             self.listener_callback,
             10)
-        self.subscription  # prevent unused variable warning
+        self.subscription_Left  # prevent unused variable warning
+
+        super().__init__('webserver_speed_right_subscriber')
+        self.subscription_Right = self.create_subscription(
+            Float32,
+            '/car/velocity_kph/right',
+            self.listener_callback,
+            10)
+        self.subscription_Right  # prevent unused variable warning
 
         global speedValue
-        speedValue = 0
+        global speedValueLeft = -69
+        global speedValueRight = -69
         # Create service clients.
             # Removing Dependant Service Clients
 
@@ -333,7 +342,7 @@ class WebServerNode(Node):
         self.timer_count = 0
         self.timer = self.create_timer(5.0, self.timer_callback)
 
-    def listener_callback(self, msg):
+    def speed_listener_callback(self, msg):
         speedValue = msg.data
 
     def timer_callback(self):
@@ -374,6 +383,9 @@ def get_webserver_node():
 
     return g.webserver_node
 
+def get_speed_value():
+    speedValue = (speedValueLeft + speedValueRight) / 2
+    return speedValue
 
 def main(args=None):
     global webserver_node

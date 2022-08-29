@@ -159,7 +159,7 @@ def api_manual_drive():
     # msg.angle = -1.0 * get_categorized_manual_angle(angle)
     # categorized_throttle = get_categorized_manual_throttle(throttle)
     # msg.throttle = -1.0 * get_rescaled_manual_speed(categorized_throttle, max_speed)
-    speed = webserver_publisher_node.speedValue
+    speed = webserver_publisher_node.get_speed_value()
     webserver_node.pub_manual_drive.publish(msg)
     return jsonify({"success": True, "speed": speed})
 
