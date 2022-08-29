@@ -395,7 +395,9 @@ def get_webserver_node():
 def get_speed_value():
     global speedValueLeft
     global speedValueRight
-    speedValue = (speedValueLeft + speedValueRight) / 2
+    speedValue = speedValueLeft
+    speedValue = speedValue + speedValueRight
+    speedValue = speedValue // 2
     return speedValue
 
 def main(args=None):
