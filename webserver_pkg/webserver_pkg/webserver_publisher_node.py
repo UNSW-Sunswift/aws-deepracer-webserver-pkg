@@ -130,8 +130,11 @@ class WebServerNode(Node):
         self.subscription_Right  # prevent unused variable warning
 
         global speedValue
-        global speedValueLeft = -69
-        global speedValueRight = -69
+        speedValue = 0
+        global speedValueLeft
+        speedValueLeft = -69
+        global speedValueRight
+        speedValueRight = -69
         # Create service clients.
             # Removing Dependant Service Clients
 
