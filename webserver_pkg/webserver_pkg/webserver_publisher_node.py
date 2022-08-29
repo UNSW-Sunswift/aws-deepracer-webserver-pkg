@@ -91,7 +91,8 @@ class WebServerNode(Node):
     """Node responsible for launching a Flask application as a seperate thread
        and creating service clients and subscribers.
     """
-
+    global speedValue
+    speedValue = 0
     def __init__(self):
         """Create a WebServerNode and launch a flask server with default host and port details.
         """
@@ -346,9 +347,11 @@ class WebServerNode(Node):
         self.timer = self.create_timer(5.0, self.timer_callback)
 
     def speed_listener_callback_left(self, msg):
+        global speedValueLeft
         speedValueLeft = msg.data
 
     def speed_listener_callback_right(self, msg):
+        global speedValueRight
         speedValueRight = msg.data
 
     def timer_callback(self):
