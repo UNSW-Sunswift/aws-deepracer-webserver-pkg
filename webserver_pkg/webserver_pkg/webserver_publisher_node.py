@@ -117,7 +117,7 @@ class WebServerNode(Node):
         self.subscription_Left = self.create_subscription(
             Float32,
             '/car/velocity_kph/left',
-            self.listener_callback,
+            self.speed_listener_callback_left,
             10)
         self.subscription_Left  # prevent unused variable warning
 
@@ -125,7 +125,7 @@ class WebServerNode(Node):
         self.subscription_Right = self.create_subscription(
             Float32,
             '/car/velocity_kph/right',
-            self.listener_callback,
+            self.speed_listener_callback_right,
             10)
         self.subscription_Right  # prevent unused variable warning
 
@@ -345,8 +345,11 @@ class WebServerNode(Node):
         self.timer_count = 0
         self.timer = self.create_timer(5.0, self.timer_callback)
 
-    def speed_listener_callback(self, msg):
-        speedValue = msg.data
+    def speed_listener_callback_left(self, msg):
+        speedValueLeft = msg.data
+
+    def speed_listener_callback_right(self, msg):
+        speedValueRight = msg.data
 
     def timer_callback(self):
         """Heartbeat function to keep the node alive.
