@@ -114,7 +114,7 @@ class WebServerNode(Node):
                                               )
         self.server_thread.start()
 
-        super().__init__('webserver_speed_left_subscriber')
+        super().__init__('webserver_speed_subscriber')
         self.subscription_Left = self.create_subscription(
             Float32,
             '/car/velocity_kph/left',
@@ -122,7 +122,6 @@ class WebServerNode(Node):
             10)
         self.subscription_Left  # prevent unused variable warning
 
-        super().__init__('webserver_speed_right_subscriber')
         self.subscription_Right = self.create_subscription(
             Float32,
             '/car/velocity_kph/right',
