@@ -114,6 +114,7 @@ class WebServerNode(Node):
                                               )
         self.server_thread.start()
 
+        # Subscribers for getting information from the car
         super().__init__('webserver_speed_subscriber')
         self.subscription_Left = self.create_subscription(
             Float32,
@@ -129,18 +130,24 @@ class WebServerNode(Node):
             10)
         self.subscription_Right  # prevent unused variable warning
 
+        self.subscription_gps_speed = self.create_subscription(
+            Float32,
+            '/car/speed/gps',
+            self.gps_speed_callback,
+            10)
+        self.subscription_gps_speed  # prevent unused variable warning
+
         global speedValue
         speedValue = 0
         global speedValueLeft
-        speedValueLeft = -69
+        speedValueLeft = -1
         global speedValueRight
-        speedValueRight = -69
+        speedValueRight = -1
         # Create service clients.
-            # Removing Dependant Service Clients
+        global gpsSpeed
+        gpsSpeed = -1
 
-            # TODO
-            # This is for testing only and at least some of these
-            # should be re-implemented for actual deployment
+        '''Removing Dependant Service Clients
 
         # Create a reentrant callback group to set the vehicle mode.
         vehicle_mode_cb_group = ReentrantCallbackGroup()
@@ -150,7 +157,7 @@ class WebServerNode(Node):
                                                     callback_group=vehicle_mode_cb_group)
         self.wait_for_service_availability(self.vehicle_state_cli)
 
-        '''Removing Dependant Service Clients
+        
 
         # Create a reentrant callback group to activate the state.
         enable_state_cb_group = ReentrantCallbackGroup()
@@ -353,6 +360,10 @@ class WebServerNode(Node):
         global speedValueRight
         speedValueRight = msg.data
 
+    def gps_speed_callback(self, msg):
+        global gpsSpeed
+        gpsSpeed = msg.data
+
     def timer_callback(self):
         """Heartbeat function to keep the node alive.
         """
@@ -395,6 +406,10 @@ def get_speed_value():
     global speedValueLeft
     global speedValueRight
     return max(speedValueLeft, speedValueRight)
+
+def get_gps_speed():
+    global gpsSpeed
+    return gpsSpeed
 
 def main(args=None):
     global webserver_node

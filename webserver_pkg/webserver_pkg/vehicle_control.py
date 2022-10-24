@@ -163,6 +163,19 @@ def api_manual_drive():
     webserver_node.pub_manual_drive.publish(msg)
     return jsonify({"success": True, "speed": speed})
 
+@VEHICLE_CONTROL_BLUEPRINT.route("/api/speed", methods=["GET"])
+def current_speed():
+    """API to get the current speed of the car
+
+    Returns:
+        dict: The current gps speed, in kph, of the car. Field "speed"
+    """
+    gps_speed = webserver_publisher_node.get_gps_speed()
+    wheel_speed = webserver_publisher_node.get_speed_value()
+    speed = max(gps_speed, wheel_speed)
+
+    return jsonify({"success": True, "speed": speed})
+
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/drive_mode", methods=["PUT", "POST"])
 def api_set_drive_mode():
