@@ -173,8 +173,9 @@ def current_speed():
     gps_speed = webserver_publisher_node.get_gps_speed()
     wheel_speed = webserver_publisher_node.get_speed_value()
     speed = max(gps_speed, wheel_speed)
+    remote_active = webserver_publisher_node.get_remote_active()
 
-    return jsonify({"success": True, "speed": speed})
+    return jsonify({"success": True, "speed": speed, "remoteActive": remote_active})
 
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/drive_mode", methods=["PUT", "POST"])

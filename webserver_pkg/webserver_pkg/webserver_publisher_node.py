@@ -34,7 +34,7 @@ from rclpy.callback_groups import (ReentrantCallbackGroup,
 from rclpy.qos import (QoSReliabilityPolicy,
                        QoSProfile,
                        QoSHistoryPolicy)
-from std_msgs.msg import Float32
+from std_msgs.msg import (Float32, Bool)
 
 # TODO: Figure out a way to avoid global variable for webserver node shared across Flask threads
 webserver_node = None
@@ -137,6 +137,15 @@ class WebServerNode(Node):
             10)
         self.subscription_gps_speed  # prevent unused variable warning
 
+        #TODO: Change Topic
+        self.subscription_remote_active = self.create_subscription(
+            Bool,
+            '',
+            self.remote_active_callback,
+            10
+        )
+        self.subscription_remote_active
+
         global speedValue
         speedValue = 0
         global speedValueLeft
@@ -146,6 +155,8 @@ class WebServerNode(Node):
         # Create service clients.
         global gpsSpeed
         gpsSpeed = -1
+        global remoteActive
+        remoteActive = False
 
         '''Removing Dependant Service Clients
 
@@ -364,6 +375,10 @@ class WebServerNode(Node):
         global gpsSpeed
         gpsSpeed = msg.data
 
+    def remote_active_callback(self, msg):
+        global remoteActive
+        remoteActive = msg.data
+
     def timer_callback(self):
         """Heartbeat function to keep the node alive.
         """
@@ -410,6 +425,10 @@ def get_speed_value():
 def get_gps_speed():
     global gpsSpeed
     return gpsSpeed
+
+def get_remote_active():
+    global remoteActive
+    return remoteActive
 
 def main(args=None):
     global webserver_node
