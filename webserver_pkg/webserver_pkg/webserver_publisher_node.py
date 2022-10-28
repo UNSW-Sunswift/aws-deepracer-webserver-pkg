@@ -140,7 +140,7 @@ class WebServerNode(Node):
         #TODO: Change Topic
         self.subscription_remote_active = self.create_subscription(
             Bool,
-            '',
+            '/remote/enable',
             self.remote_active_callback,
             10
         )
