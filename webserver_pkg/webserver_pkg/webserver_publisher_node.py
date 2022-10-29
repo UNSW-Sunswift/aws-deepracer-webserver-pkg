@@ -34,6 +34,7 @@ from rclpy.callback_groups import (ReentrantCallbackGroup,
 from rclpy.qos import (QoSReliabilityPolicy,
                        QoSProfile,
                        QoSHistoryPolicy)
+from std_msgs.msg import Float32
 
 # TODO: Figure out a way to avoid global variable for webserver node shared across Flask threads
 webserver_node = None
@@ -58,8 +59,7 @@ from deepracer_interfaces_pkg.srv import (ActiveStateSrv,
                                           NavThrottleSrv,
                                           GetCtrlModesSrv,
                                           OTGLinkStateSrv)
-from deepracer_interfaces_pkg.msg import (ServoCtrlMsg,
-                                          SoftwareUpdatePctMsg)
+from deepracer_interfaces_pkg.msg import (SoftwareUpdatePctMsg)
 from webserver_pkg.webserver import app
 from webserver_pkg.utility import DoubleBuffer
 from webserver_pkg.constants import (VEHICLE_STATE_SERVICE,
@@ -85,13 +85,14 @@ from webserver_pkg.constants import (VEHICLE_STATE_SERVICE,
                                      CAL_DRIVE_TOPIC,
                                      MANUAL_DRIVE_TOPIC,
                                      SOFTWARE_UPDATE_PCT_TOPIC)
-
+from messages.msg import ServoCtrlMsg
 
 class WebServerNode(Node):
     """Node responsible for launching a Flask application as a seperate thread
        and creating service clients and subscribers.
     """
-
+    global speedValue
+    speedValue = 0
     def __init__(self):
         """Create a WebServerNode and launch a flask server with default host and port details.
         """
@@ -113,7 +114,40 @@ class WebServerNode(Node):
                                               )
         self.server_thread.start()
 
+        # Subscribers for getting information from the car
+        super().__init__('webserver_speed_subscriber')
+        self.subscription_Left = self.create_subscription(
+            Float32,
+            '/car/velocity_kph/left',
+            self.speed_listener_callback_left,
+            10)
+        self.subscription_Left  # prevent unused variable warning
+
+        self.subscription_Right = self.create_subscription(
+            Float32,
+            '/car/velocity_kph/right',
+            self.speed_listener_callback_right,
+            10)
+        self.subscription_Right  # prevent unused variable warning
+
+        self.subscription_gps_speed = self.create_subscription(
+            Float32,
+            '/car/speed/gps',
+            self.gps_speed_callback,
+            10)
+        self.subscription_gps_speed  # prevent unused variable warning
+
+        global speedValue
+        speedValue = 0
+        global speedValueLeft
+        speedValueLeft = -1
+        global speedValueRight
+        speedValueRight = -1
         # Create service clients.
+        global gpsSpeed
+        gpsSpeed = -1
+
+        '''Removing Dependant Service Clients
 
         # Create a reentrant callback group to set the vehicle mode.
         vehicle_mode_cb_group = ReentrantCallbackGroup()
@@ -122,6 +156,8 @@ class WebServerNode(Node):
                                                     VEHICLE_STATE_SERVICE,
                                                     callback_group=vehicle_mode_cb_group)
         self.wait_for_service_availability(self.vehicle_state_cli)
+
+        
 
         # Create a reentrant callback group to activate the state.
         enable_state_cb_group = ReentrantCallbackGroup()
@@ -288,6 +324,8 @@ class WebServerNode(Node):
                                                      callback_group=otg_link_state_cb_group)
         self.wait_for_service_availability(self.otg_link_state_cli)
 
+        '''
+
         # Create a reentrant callback group to publish manual drive messages.
         manual_pub_drive_msg_cb_group = ReentrantCallbackGroup()
         self.get_logger().info(f"Create manual drive publisher: {MANUAL_DRIVE_TOPIC}")
@@ -313,6 +351,18 @@ class WebServerNode(Node):
         # Heartbeat timer.
         self.timer_count = 0
         self.timer = self.create_timer(5.0, self.timer_callback)
+
+    def speed_listener_callback_left(self, msg):
+        global speedValueLeft
+        speedValueLeft = msg.data
+
+    def speed_listener_callback_right(self, msg):
+        global speedValueRight
+        speedValueRight = msg.data
+
+    def gps_speed_callback(self, msg):
+        global gpsSpeed
+        gpsSpeed = msg.data
 
     def timer_callback(self):
         """Heartbeat function to keep the node alive.
@@ -352,6 +402,14 @@ def get_webserver_node():
 
     return g.webserver_node
 
+def get_speed_value():
+    global speedValueLeft
+    global speedValueRight
+    return max(speedValueLeft, speedValueRight)
+
+def get_gps_speed():
+    global gpsSpeed
+    return gpsSpeed
 
 def main(args=None):
     global webserver_node

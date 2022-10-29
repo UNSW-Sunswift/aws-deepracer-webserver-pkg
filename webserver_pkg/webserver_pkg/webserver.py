@@ -28,34 +28,37 @@ from flask_cors import CORS
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 
-from webserver_pkg.calibration import CALIBRATION_BLUEPRINT
-from webserver_pkg.device_info_api import DEVICE_INFO_API_BLUEPRINT
-from webserver_pkg.login import LOGIN_BLUEPRINT
-from webserver_pkg.led_api import LED_API_BLUEPRINT
-from webserver_pkg.models import MODELS_BLUEPRINT
-from webserver_pkg.software_update import SOFTWARE_UPDATE_BLUEPRINT
-from webserver_pkg.ssh_api import SSH_API_BLUEPRINT
-from webserver_pkg.vehicle_logs import VEHICLE_LOGS_BLUEPRINT
+# from webserver_pkg.calibration import CALIBRATION_BLUEPRINT
+# from webserver_pkg.device_info_api import DEVICE_INFO_API_BLUEPRINT
+# from webserver_pkg.login import LOGIN_BLUEPRINT
+# from webserver_pkg.led_api import LED_API_BLUEPRINT
+# from webserver_pkg.models import MODELS_BLUEPRINT
+# from webserver_pkg.software_update import SOFTWARE_UPDATE_BLUEPRINT
+# from webserver_pkg.ssh_api import SSH_API_BLUEPRINT
+# from webserver_pkg.vehicle_logs import VEHICLE_LOGS_BLUEPRINT
+# from webserver_pkg.wifi_settings import WIFI_SETTINGS_BLUEPRINT
 from webserver_pkg.vehicle_control import VEHICLE_CONTROL_BLUEPRINT
-from webserver_pkg.wifi_settings import WIFI_SETTINGS_BLUEPRINT
 
 template_dir = os.path.abspath('/opt/aws/deepracer/lib/device_console/templates')
 # Create the Flask application object.
-app = Flask(__name__, template_folder=template_dir)
+# app = Flask(__name__, template_folder=template_dir)
+app = Flask(__name__)
 CORS(app)
-csrf = CSRFProtect()
+
+# csrf = CSRFProtect()
 # Initialize the application with CSRF and register all the API blueprints.
-csrf.init_app(app)
-app.register_blueprint(VEHICLE_LOGS_BLUEPRINT)
+# csrf.init_app(app)
+# app.register_blueprint(VEHICLE_LOGS_BLUEPRINT)
+# app.register_blueprint(WIFI_SETTINGS_BLUEPRINT)
+# app.register_blueprint(LOGIN_BLUEPRINT)
+# app.register_blueprint(SOFTWARE_UPDATE_BLUEPRINT)
+# app.register_blueprint(CALIBRATION_BLUEPRINT)
+# app.register_blueprint(SSH_API_BLUEPRINT)
+# app.register_blueprint(LED_API_BLUEPRINT)
+# app.register_blueprint(DEVICE_INFO_API_BLUEPRINT)
+# app.register_blueprint(MODELS_BLUEPRINT)
+
 app.register_blueprint(VEHICLE_CONTROL_BLUEPRINT)
-app.register_blueprint(WIFI_SETTINGS_BLUEPRINT)
-app.register_blueprint(LOGIN_BLUEPRINT)
-app.register_blueprint(SOFTWARE_UPDATE_BLUEPRINT)
-app.register_blueprint(CALIBRATION_BLUEPRINT)
-app.register_blueprint(SSH_API_BLUEPRINT)
-app.register_blueprint(LED_API_BLUEPRINT)
-app.register_blueprint(DEVICE_INFO_API_BLUEPRINT)
-app.register_blueprint(MODELS_BLUEPRINT)
 
 app.config.update(
     DEBUG=True,
