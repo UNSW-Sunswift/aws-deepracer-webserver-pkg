@@ -160,8 +160,9 @@ def api_manual_drive():
     # categorized_throttle = get_categorized_manual_throttle(throttle)
     # msg.throttle = -1.0 * get_rescaled_manual_speed(categorized_throttle, max_speed)
     speed = webserver_publisher_node.get_speed_value()
+    remote_active = webserver_publisher_node.get_remote_active()
     webserver_node.pub_manual_drive.publish(msg)
-    return jsonify({"success": True, "speed": speed})
+    return jsonify({"success": True, "speed": speed, "remoteActive": remote_active})
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/speed", methods=["GET"])
 def current_speed():
@@ -173,8 +174,9 @@ def current_speed():
     gps_speed = webserver_publisher_node.get_gps_speed()
     wheel_speed = webserver_publisher_node.get_speed_value()
     speed = max(gps_speed, wheel_speed)
+    remote_active = webserver_publisher_node.get_remote_active()
 
-    return jsonify({"success": True, "speed": speed})
+    return jsonify({"success": True, "speed": speed, "remoteActive": remote_active})
 
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/drive_mode", methods=["PUT", "POST"])
