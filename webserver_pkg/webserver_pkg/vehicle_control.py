@@ -27,6 +27,7 @@ import math
 from flask import (Blueprint,
                    jsonify,
                    request)
+import hashlib
 
 
 from deepracer_interfaces_pkg.srv import (ActiveStateSrv,
@@ -115,6 +116,7 @@ def api_manual_drive():
     regen = request.json.get("regen")
     brake = request.json.get("brake")
     gear = request.json.get("gear")
+    checksum = request.json.get("checksum")
 
     if angle is None:
         return api_fail("angle is required")
@@ -128,6 +130,8 @@ def api_manual_drive():
         return api_fail("brake is required")
     if gear is None:
         return api_fail("gear is required")
+    if checksum is None:
+        return api_fail("checksim is required")
 
 
     if max_speed < 0.0 or max_speed > 1.0:
@@ -143,25 +147,29 @@ def api_manual_drive():
     if gear != 0 and gear != 1 and gear != -1:
         return api_fail("gear needs to be -1, 0, or 1 for r n d")
 
-    webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}  Max_Speed: {max_speed}  Regen: {regen}  Brake: {brake}  Gear: {gear}")
+    checksumString = str(angle) + str(throttle) + str(max_speed) + str(regen) + str(brake) + str(gear)
+    jsonChecksum = hashlib.md5(checksumString.encode('utf-8')).hexdigest()
 
-    # Create the servo message.
-    msg = ServoCtrlMsg()
+    if (jsonChecksum == checksum or checksum == "0"):
+        webserver_node.get_logger().info(f"Angle: {angle}  Throttle: {throttle}  Max_Speed: {max_speed}  Regen: {regen}  Brake: {brake}  Gear: {gear}")
 
-    # Send raw angle & throttle values
-    msg.angle = angle
-    msg.throttle = get_rescaled_manual_speed(throttle, max_speed)
-    msg.regen = regen
-    msg.brake = brake
-    msg.gear = gear
+        # Create the servo message.
+        msg = ServoCtrlMsg()
 
-    # bound the throttle value based on the categories defined
-    # msg.angle = -1.0 * get_categorized_manual_angle(angle)
-    # categorized_throttle = get_categorized_manual_throttle(throttle)
-    # msg.throttle = -1.0 * get_rescaled_manual_speed(categorized_throttle, max_speed)
-    speed = webserver_publisher_node.get_speed_value()
-    remote_active = webserver_publisher_node.get_remote_active()
-    webserver_node.pub_manual_drive.publish(msg)
+        # Send raw angle & throttle values
+        msg.angle = angle
+        msg.throttle = get_rescaled_manual_speed(throttle, max_speed)
+        msg.regen = regen
+        msg.brake = brake
+        msg.gear = gear
+
+        # bound the throttle value based on the categories defined
+        # msg.angle = -1.0 * get_categorized_manual_angle(angle)
+        # categorized_throttle = get_categorized_manual_throttle(throttle)
+        # msg.throttle = -1.0 * get_rescaled_manual_speed(categorized_throttle, max_speed)
+        speed = webserver_publisher_node.get_speed_value()
+        remote_active = webserver_publisher_node.get_remote_active()
+        webserver_node.pub_manual_drive.publish(msg)
     return jsonify({"success": True, "speed": speed, "remoteActive": remote_active})
 
 @VEHICLE_CONTROL_BLUEPRINT.route("/api/speed", methods=["GET"])
